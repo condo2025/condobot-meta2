@@ -24,10 +24,15 @@ app.get("/", (req, res) => res.status(200).send("CondoBot Meta webhook is runnin
 app.get("/webhook", verifyWebhook);
 
 // 2) Recepción de eventos (POST)
-app.post("/webhook", (req, res) => {
-  try {
+app.post("/webhook", express.json({ verify: rawBodySaver }), (req, res) => {
     console.log("Webhook received");
+    console.log("Headers:", req.headers);
     console.log("Body:", JSON.stringify(req.body, null, 2));
+
+    // ✅ BYPASS SOLO PARA PRUEBA MANUAL
+   if (process.env.NODE_ENV !== "production" && !req.headers["x-hub-signature-256"]) {
+     return res.sendStatus(200);
+   }
 
     // Verificación de firma (seguridad)
     verifyMetaSignature(req);
