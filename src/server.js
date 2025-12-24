@@ -26,6 +26,9 @@ app.get("/webhook", verifyWebhook);
 // 2) Recepción de eventos (POST)
 app.post("/webhook", (req, res) => {
   try {
+    console.log("Webhook received");
+    console.log("Body:", JSON.stringify(req.body, null, 2));
+
     // Verificación de firma (seguridad)
     verifyMetaSignature(req);
 
